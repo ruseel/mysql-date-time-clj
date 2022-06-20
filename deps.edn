@@ -1,0 +1,13 @@
+{:paths ["dev" "notebooks" "resources"]
+ :deps {seancorfield/next.jdbc {:mvn/version "1.2.659"}
+        mysql/mysql-connector-java {:mvn/version "8.0.28"}
+        io.github.nextjournal/clerk {:mvn/version "0.8.451"}}
+ :aliases
+ {:nextjournal/clerk
+  {:extra-paths ["datasets"]
+   :exec-fn nextjournal.clerk/build-static-app!
+   ;; notebooks to be built, accepts globs patterns
+   :exec-args {:bundle? false
+               :git/url "https://github.com/ruseel/mysql-date-time-clj"
+               :paths ["index.md"
+                       "notebooks/mysql.clj"]}}}}
