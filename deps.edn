@@ -1,7 +1,8 @@
 {:paths ["dev" "notebooks" "resources"]
  :deps {seancorfield/next.jdbc {:mvn/version "1.2.659"}
         mysql/mysql-connector-java {:mvn/version "8.0.28"}
-        io.github.nextjournal/clerk {:mvn/version "0.8.451"}}
+        io.github.nextjournal/clerk {#_#_:mvn/version "0.8.451"
+                                     :local/root "/Users/ruseel/p/clerk"}}
  :aliases
  {:nextjournal/clerk
   {:extra-paths ["datasets"]
