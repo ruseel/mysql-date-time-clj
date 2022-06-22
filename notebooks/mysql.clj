@@ -57,21 +57,47 @@
 ;; rendering 값을 받을 수 있습니다.
 
 ;; 자, mysql-connector-j 가 어떻게 session timezone 을 설정하고
-;; `java.util.Date`, `java.sql.Timestamp`,
-;; `java.time.LocalDateTime`,
-;; `java.time.ZonedDateTime` 을 읽어오거나 저장하는지 알아 봅니다.
+;; `java.time.Instant`, `java.time.LocalDateTime` 을 읽어오거나 저장하는지 알아 봅니다.
 
 ;; mysql-connector-j 에서는
 ;; [6.3.11 Datetime types processing](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-connp-props-datetime-types-processing.html) 에
 ;; 에 적힌 것 처럼 `connectionTimeZone`, `forceConnectionTimeZoneToSession`, `preserveInstants`
 ;; property 가 session timezone 설정과 mysql-connector-j 에서 처리하는 변환에 영향을 끼칩니다.
+;; 이 property 들의 모든 조합 아래서 mysql-connector-j 이 date,time 관련 변환을 하는지는
+;; [DateTimeTest.java](https://github.com/mysql/mysql-connector-j/blob/release%2F8.0/src/test/java/testsuite/simple/DateTimeTest.java#L3962-L3964) 에서
+;; 볼 수 있습니다. [1]
 ;;
-;; 아주 자세한, 모든 조합의 property 설정 아래 mysql-connector-j 이 어떻게 변환하는지는 [DateTimeTest.java](https://github.com/mysql/mysql-connector-j/blob/release%2F8.0/src/test/java/testsuite/simple/DateTimeTest.java#L3962-L3964) 에서
-;; 볼 수 있습니다. 그렇게 따지기에는 좀 어렵기도 하다. 그러니 mysql-connector-j 에서 사용하는
+;; 하지만 그렇게 따라가는 것이 좀 어려웠습니다. mysql-connector-j 에서 사용하는
 ;; `connectionTimeZone`, `forceConnectionTimeZoneToSession`, `preserveInstants` property 의
-;; default 설정 아래서 어떻게 되는지 따져보자. 그리고 sinsunhi 에서 사용하는 설정에 대해서도.
+;; default 값 아래 어떻게 되는지 예제를 보려고 합니다.
+;;
+;; 시험해 볼 때 next.jdbc 에서 해주는 변환을 그림에서 빼기 위해
+;; DateTimeTest.java 처럼 mysql-connector-j (== JDBC) 의 구현만으로
+;; 시험합니다.
+;;
+
+;; DataSource 를 이렇게 가져옵니다.
+;; com.mysql.jdbc.jdbc2.optional.MysqlDataSource 을 써서 하나?
+;; DataSource 에서 Connection 으로도 바꿔야 하고 뭐가 많다.
+;; 그러지 말자.
+;;
+;; next.jdbc 에서 변환하는 부분을 찾아보자.
+;;   next.jdbc 안에도 시간 변경과 관련한 테스트가 있다.
+;;   따라가다 보니 postgresql jdbc driver 에서 특정 conversion 을
+;;   지원안해서 생긴 문제라고 하는 듯 싶다.
+;;
+;; 그 문제를 확인하기 위한 test 가 date_time_test.clj 이다.
+;; https://github.com/seancorfield/next-jdbc/blob/develop/test/next/jdbc/date_time_test.clj
 ;;
 ;;
+;; https://github.com/seancorfield/next-jdbc/issues/73#issuecomment-553021972
+;;
+;; Different databases have different SQL types for representing
+;; dates/times, with and without timezones,
+;; so there is no "one size fits all" that
+;; next.jdbc could "enforce" for all programs.
+;;
+
 
 ;;
 ;; mysql + mysql-connector-j 가 끼여 있을 때
@@ -170,3 +196,10 @@
 ;; JVM 에서 이렇게 얻은 값은 이 설정에 영향을 많이 받습니다.
 ;;
 ;; https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-time-instants.html
+
+
+;; [1] [DateTimeTest.java](https://github.com/mysql/mysql-connector-j/blob/dd61577595edad45c398af508cf91ad26fc4144f/src/test/java/testsuite/simple/DateTimeTest.java#L4405) 에서
+;; testSymmetricInstantRetrieval 함수를 보면
+;; `#{java.sql.Timestamp, java.util.Date, java.time.ZonedDateTime}` 를 `#{DATETIME, TIMESTAMP, VARCHAR` 필드에
+;; insert 하고 select 했을 때 같은 Instant 을 얻는지 시험하는 코드를 볼 수 있습니다.
+;;
