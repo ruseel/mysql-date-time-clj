@@ -299,11 +299,14 @@
 
 ;; # Take away
 ;;
+;; mysql server, cli 만 고려했을 때도 time_zone 설정이 있습니다. mysql client 들을 사용할 때는 영향을
+;; 끼칠 때가 많습니다. mysql-connector-j 를 사용할 때는 관련이 덜 있습니다.
+;;
 ;; Instant 는 clojure 에서 pr, read 를 지원하는 몇 안 되는 value 입니다. 많이 사용합니다!
 ;;
 ;; next.jdbc 로 string, LocalDateTime, ZonedDateTime, Instant, java.sql.Timestamp 모두
 ;; 바로 parameter 로 넘길 수 있습니다. 하지만 Instant(== java.time.Instant == java.sql.Timestamp) 로
-;; 넘기는 것이 덜 헷갈리는 느낌이니 Instant 로 넣으면 좋겠습니다.
+;; 넘기는 것이 덜 헷갈리니 Instant 로 넣으면 좋겠습니다. 잘 들어갑니다.
 ;;
 ;; 예전에 주빈님이 적어준 것처럼 `DATETIME` 필드를 쓰면서 JVM TimeZone 을 'Asia/Seoul' 로 사용하면
 ;; ECS 에 올라간 서버와 동작이 약간 다를 수도 있으니 TimeZone 을 'UTC' 로 바꿔서 쓰는 것이 혼란이 적겠습니다.
