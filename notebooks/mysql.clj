@@ -295,7 +295,11 @@
 
 ;; java.sql.Timestamp 는 이렇게 pr 도 잘 지원하고 `clojure.core/read` 에서도 잘 지원합니다
 
-(= inst-a (read-string (pr-str inst-a)))
+^{:nextjournal.clerk/visibility #{:hide}}
+(clerk/example
+ (pr-str inst-a)
+ (read-string (pr-str inst-a)))
+
 
 ;; # Take away
 ;;
