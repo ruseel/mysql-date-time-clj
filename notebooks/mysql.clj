@@ -324,6 +324,10 @@
 ;; ### mysql 에서 timezone offset 이 붙은 리터럴을 8.0.19 부터 지원하기 시작했다. 이 기능이 jdbc 의 prepared statement 와 setParameter 처리 후에 일어나는 변환에 영향이 있을까?
 ;;
 ;; 없다. 우리의 사용방법에서는 없다고 봐야 한다. timezone offset 이 붙은 literal 을 보내는 경우가 없는 것 같다.
+;;
+;; ### 이 글을 고치려면 어떻게 하나요?
+;;
+;; [이 파일](https://github.com/ruseel/mysql-date-time-clj/blob/main/notebooks/mysql.clj) 을 고칩니다. clerk 으로 만들었습니다.
 
 ;; # 참고
 ;;
